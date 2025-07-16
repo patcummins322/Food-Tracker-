@@ -1,0 +1,65 @@
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+import { Upload } from "lucide-react";
+
+export default function FoodTrackerApp() {
+  const [image, setImage] = useState(null);
+  const [foodInfo, setFoodInfo] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(URL.createObjectURL(file));
+      analyzeFood(file);
+    }
+  };
+
+  const analyzeFood = async (file) => {
+    setLoading(true);
+    // Simulate food recognition and nutrition analysis
+    setTimeout(() => {
+      setFoodInfo({
+        name: "Grilled Chicken with Rice",
+        calories: 550,
+        protein: 40,
+      });
+      setLoading(false);
+    }, 2000);
+  };
+
+  return (
+    <div className="max-w-xl mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-4 text-center">Food Calorie & Protein Tracker</h1>
+      <Card className="mb-6">
+        <CardContent className="flex flex-col items-center gap-4 p-6">
+          <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded-xl p-8 cursor-pointer hover:border-blue-500">
+            <Upload className="w-10 h-10 mb-2" />
+            <span>Upload a picture of your food</span>
+            <Input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+          </label>
+          {image && <img src={image} alt="Uploaded food" className="mt-4 rounded-xl max-h-60" />}
+        </CardContent>
+      </Card>
+      {loading && (
+        <div className="text-center">
+          <p className="mb-2">Analyzing food...</p>
+          <Progress value={50} />
+        </div>
+      )}
+      {foodInfo && !loading && (
+        <Card>
+          <CardContent className="p-6">
+            <h2 className="text-xl font-semibold mb-2">Food Analysis</h2>
+            <p><strong>Name:</strong> {foodInfo.name}</p>
+            <p><strong>Calories:</strong> {foodInfo.calories} kcal</p>
+            <p><strong>Protein:</strong> {foodInfo.protein} g</p>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
